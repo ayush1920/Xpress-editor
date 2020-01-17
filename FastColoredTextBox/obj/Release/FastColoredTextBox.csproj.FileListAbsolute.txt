@@ -1,0 +1,12 @@
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\bin\Release\FastColoredTextBox.dll
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\bin\Release\FastColoredTextBox.pdb
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBox.csprojAssemblyReference.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBoxNS.FastColoredTextBox.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBoxNS.FindForm.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBoxNS.GoToForm.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBoxNS.HotkeysEditorForm.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBoxNS.ReplaceForm.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBox.csproj.GenerateResource.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBox.csproj.CoreCompileInputs.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBox.dll
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\FastColoredTextBox\obj\Release\FastColoredTextBox.pdb

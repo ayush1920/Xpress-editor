@@ -1,0 +1,14 @@
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\WindowsFormsApp5.exe.config
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\WindowsFormsApp5.exe
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\WindowsFormsApp5.pdb
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\Bunifu_UI_v1.5.3.dll
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\FastColoredTextBox.dll
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\bin\Release\FastColoredTextBox.pdb
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.csprojAssemblyReference.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.frame_home.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.Properties.Resources.resources
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.csproj.GenerateResource.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.csproj.CoreCompileInputs.cache
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.csproj.CopyComplete
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.exe
+C:\Users\AYUSH KUMAR\source\repos\WindowsFormsApp5\WindowsFormsApp5\obj\Release\WindowsFormsApp5.pdb
