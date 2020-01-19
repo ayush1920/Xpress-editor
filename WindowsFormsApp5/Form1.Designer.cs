@@ -224,7 +224,8 @@ namespace WindowsFormsApp5
             this.tabpanel.Name = "tabpanel";
             this.tabpanel.Size = new System.Drawing.Size(1074, 0);
             this.tabpanel.TabIndex = 0;
-            this.tabpanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabpanel_DragEnter);
+            this.tabpanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabpanel_DragDrop);
+            this.tabpanel.DragOver += new System.Windows.Forms.DragEventHandler(this.tabpanel_DragOver);
             // 
             // ofdMain
             // 

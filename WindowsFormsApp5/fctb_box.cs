@@ -1,5 +1,10 @@
-﻿using System.Diagnostics;
-using WindowsFormsApp5;
+﻿using WindowsFormsApp5;
+using System;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace WindowsFormsApp5
 {
@@ -28,7 +33,7 @@ namespace WindowsFormsApp5
             this.AutoIndentExistingLines = false;
             this.AutoScrollMinSize = new System.Drawing.Size(38, 19);
             this.BackBrush = null;
-           // this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            // this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CharHeight = 19;
             this.CharWidth = 9;
             this.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -50,23 +55,71 @@ namespace WindowsFormsApp5
             this.Size = new System.Drawing.Size(1074, 631);
             this.TabIndex = 3;
             this.Zoom = 100;
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.fctb_box_DragOver);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.fctb_box_DragDrop);
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
 
 
         }
-
+        // override for shortcut ctrl+ T
         protected override void newTab()
         {
             base.newTab();
-            frame_home.access_home.newTab(null,-1);
+            frame_home.access_home.newTab(null, -1);
         }
+        // override for shortcut ctrl+ W
         protected override void closeTab()
         {
             base.closeTab();
             frame_home.access_home.closeTab();
         }
 
+        private void fctb_box_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void fctb_box_DragDrop(object sender, DragEventArgs e)
+        {  if (e.Data.GetDataPresent("tabdata"))
+            {
+                e.Effect = DragDropEffects.Move;
+                string data = (string)e.Data.GetData("tabdata");
+                String[] spearator = { "$" };
+                Int32 count = 3;
+                // using the method 
+                String[] strlist = data.Split(spearator, count,
+                       StringSplitOptions.RemoveEmptyEntries);
+                if (strlist[0] == Program.guid || int.Parse(strlist[1]) == 1)
+                    return;
+                else
+                {/*
+                    data communication format - 
+                    own ID :
+                    send ID :
+                    transaction type :
+                    data if available :
+                    */
+                    string com_data = Program.guid + "$" + strlist[0] + "$" + NativeMethods.DRAG_RECEIVED + "$" + strlist[2];
+                    Debug.WriteLine("send data-" + com_data);
+                    Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+
+                    foreach (Process p in processes)
+                    {
+                        if (p.Id.ToString() == strlist[0])
+                        {
+                            IntPtr windowHandle = p.MainWindowHandle;
+
+                            NativeMethods.communicate(com_data,windowHandle, NativeMethods.WM_COPYDATA);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                e.Effect = DragDropEffects.None;
+
+        }
 
     }
 }

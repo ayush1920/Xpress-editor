@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -35,7 +36,11 @@ namespace WindowsFormsApp5
         public static readonly int WM_ACTIVATEAPP = RegisterWindowMessage("WM_ACTIVATEAPP");
 
         public static int WM_COPYDATA { get; private set; }
+        public static bool IsHandleCreated { get; private set; }
+
         public static string guid="";
+        public static string main = "";
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -45,11 +50,11 @@ namespace WindowsFormsApp5
 
         /// args  -  Filepath of garbage file, name of tab, if tab is saved - location of saved file
         static void Main(string[] args)
-        { 
+        {
             guid = "034c3adc-0056-4167-97e0-772f92d572fa";
             bool createdNew = true;
             if (args.Length == 3)
-                guid = Guid.NewGuid().ToString();
+            guid = Guid.NewGuid().ToString();
             
             //by creating a mutex, the next application instance will detect it
             //and the code will flow through the "else" branch 
@@ -78,7 +83,11 @@ namespace WindowsFormsApp5
                             location = null;
                         frame.newWindowChange(args[1], location);
                     }
+
+                    guid = Process.GetCurrentProcess().Id.ToString();
+                    Debug.WriteLine("original-"+ guid);
                     Application.Run(frame);
+
                 }
                 else
                 {
@@ -146,5 +155,17 @@ namespace WindowsFormsApp5
                 }
             }
         }
+
+        private static string GetAssemblyGuid(Assembly assembly)
+        {
+            object[] customAttribs = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
+            if (customAttribs.Length < 1)
+            {
+                return null;
+            }
+
+            return ((GuidAttribute)(customAttribs.GetValue(0))).Value.ToString();
+        }
+
     }
 }

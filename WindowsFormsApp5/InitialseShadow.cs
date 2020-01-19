@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace WindowsFormsApp5
 {
@@ -95,10 +96,10 @@ namespace WindowsFormsApp5
 
 
 
-            ///////////////////////////////////////////////////////////////////////////
-            ///       IMPORTANT: THIS MESSAGE CODE IS FOR MUTEX USED IN PROGRAM.CS  ///
-            ///       DELETING THIS WILL CHANGE HOW MULTIPROCESS IS HANDLED         ///
-            ///////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////
+            ///       IMPORTANT: THIS MESSAGE CODE IS FOR MUTEX USED IN PROGRAM.CS       ///
+            ///           DELETING THIS WILL CHANGE HOW MULTIPROCESS IS HANDLED          ///
+            ////////////////////////////////////////////////////////////////////////////////
             
 
 
@@ -116,7 +117,71 @@ namespace WindowsFormsApp5
                         open(fileName);
                     }
                     BringWindowToFront();
-                   
+
+                }
+
+                else if (dataType == 3)
+                {
+                    string tabdata = Marshal.PtrToStringAnsi(copyData.lpData);
+                    if (tabdata != null)
+                    {
+
+                        String[] spearator = { "$" };
+                        Int32 count = 10;
+                        String[] strlist = tabdata.Split(spearator, count,
+                      StringSplitOptions.RemoveEmptyEntries);
+
+                        if (strlist[1] == Program.guid.ToString())
+                        {
+                            if (strlist[2] == NativeMethods.DRAG_RECEIVED)
+                            {
+                                // Write file
+                                TabClosedStarted = true;
+                                TabCloseTrigger = true;
+                                string tempPath = Path.GetTempPath();
+
+
+                                tabbutton btn = frame_home.buttonList[int.Parse(strlist[3])];
+                                int ind = frame_home.access_home.getFctbBox(btn.Target);
+                                tempPath = Path.Combine(tempPath, "Xpress_editorGarbage.txt");
+                                File.WriteAllText(tempPath, frame_home.fctbList[ind].Text);
+                                TabClosedStarted = false;
+
+                                // Send data to open file to pid
+                                string location = btn.fileLocation;
+                                if (location == null)
+                                    location = "null";
+                                string com_data = Program.guid + "$" + strlist[0] + "$" + NativeMethods.DRAG_FINISH + "$" +
+                                Path.Combine(Path.GetTempPath(), "Xpress_editorGarbage.txt") + "$" + btn.Text + "$" + location;
+                                Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+                                foreach (Process p in processes)
+                                {
+                                    if (p.Id.ToString() == strlist[0])
+                                    {
+                                        IntPtr windowHandle = p.MainWindowHandle;
+                                        NativeMethods.communicate(com_data, windowHandle, NativeMethods.WM_COPYDATA);
+                                    }
+                                }
+
+                            }
+                            else if (strlist[2] == NativeMethods.DRAG_FINISH)
+                            {
+                                string guid = strlist[0];
+                                string grbg_path = strlist[3];
+                                string name = strlist[4];
+                                string location = strlist[5];
+                                if (location == "null")
+                                    location = null;
+                                int old = buttonList.Count;
+                                new Thread(() => threadFun(name,location)).Start();
+                                Thread.Sleep(100);
+                                newTab(grbg_path, -1);
+                            }
+                        }
+
+
+
+                    }
                 }
                 else
                 {
@@ -124,11 +189,9 @@ namespace WindowsFormsApp5
                     dataType), "SendMessageDemo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
             else if (m.Msg == Program.WM_ACTIVATEAPP)
             {
-                // Maximizes and bring it to front. - Only Main Window
-                if (Program.guid== "034c3adc-0056-4167-97e0-772f92d572fa")
+                // Maximizes and bring it to front.
                 BringWindowToFront();
               
             }

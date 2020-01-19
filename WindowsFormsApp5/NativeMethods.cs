@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace WindowsFormsApp5
@@ -20,6 +21,9 @@ namespace WindowsFormsApp5
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
+
+        public static string DRAG_RECEIVED = "drag_received";
+        public static string DRAG_FINISH = "drag_finish";
         /// <summary>
         /// Handle used to send the message to all windows
         /// </summary>
@@ -29,6 +33,7 @@ namespace WindowsFormsApp5
         /// An application sends the WM_COPYDATA message to pass data to another application.
         /// </summary>
         public static uint WM_COPYDATA = 0x004A;
+        public static uint TRANSFER_TAB_DATA = 0x004B;
 
         /// <summary>
         /// Contains data to be passed to another application by the WM_COPYDATA message.
@@ -164,5 +169,32 @@ namespace WindowsFormsApp5
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg,
         ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+
+        public static void communicate(string data, IntPtr handle,uint dataType)
+        {
+            IntPtr ptrCopyData = IntPtr.Zero;
+            try
+            {
+                NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT();
+                copyData.dwData = new IntPtr(3);
+                copyData.cbData = data.Length + 1;
+                copyData.lpData = Marshal.StringToHGlobalAnsi(data);
+                ptrCopyData = Marshal.AllocCoTaskMem(Marshal.SizeOf(copyData));
+                Marshal.StructureToPtr(copyData, ptrCopyData, false);
+                SendMessage(handle, dataType, IntPtr.Zero, ptrCopyData);
+            }
+
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error at fctb_box. Brodcaset data");
+            }
+            finally
+            {
+                // Free the allocated memory after the control has been returned
+                if (ptrCopyData != IntPtr.Zero)
+                    Marshal.FreeCoTaskMem(ptrCopyData);
+            }
+        }
+
     }
 }

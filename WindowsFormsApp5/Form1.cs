@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Reflection;
 
 namespace WindowsFormsApp5
 {
@@ -31,6 +32,8 @@ namespace WindowsFormsApp5
         public static List<fctb_box> fctbList = new List<fctb_box>();
         public static Bunifu.Framework.UI.BunifuFlatButton counter;
         public static frame_home access_home;
+        public static bool TabCloseTrigger=false;
+        public static bool TabClosedStarted = false;
 
         public frame_home(string filename)
 
@@ -124,7 +127,6 @@ namespace WindowsFormsApp5
 
             if (forced == true)
                 focusedtab = forcedtab;
-            Debug.WriteLine("forced tab"+ focusedtab);
             if (tabCount < 1)
                 return;
             int ind = getFctbBox(buttonList[focusedtab].Target);
@@ -361,16 +363,24 @@ namespace WindowsFormsApp5
             new Thread(()=>threadFun(buttonname, location)).Start();
         }
 
+
+        public bool isHandleCreatedWindow()
+        {
+            return main_panel.IsHandleCreated;
+        }
+
+
         private void threadFun(string buttonname,string location)
         {
             while (true)
             {
-                if (buttonList.Count > focusedtab &&IsHandleCreated)
+                if (buttonList.Count > focusedtab && IsHandleCreated)
                 {
                     BeginInvoke((MethodInvoker)delegate
                     {
                         buttonList[focusedtab].Text = buttonname;
                         buttonList[focusedtab].fileLocation = location;
+                        fctbList[getFctbBox(buttonList[focusedtab].Target)].IsChanged = true;
                         
                     });
                     break;
@@ -381,11 +391,71 @@ namespace WindowsFormsApp5
         }
 
 
+        private void tabpanel_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("tabdata"))
+            {
+                e.Effect = DragDropEffects.Move;
+                string data = (string)e.Data.GetData("tabdata");
+                String[] spearator = { "$" };
+                Int32 count = 3;
+                // using the method 
+                String[] strlist = data.Split(spearator, count,
+                       StringSplitOptions.RemoveEmptyEntries);
+                if (strlist[0] == Program.guid || int.Parse(strlist[1]) == 1)
+                    return;
+                else
+                {/*
+                    data communication format - 
+                    own ID :
+                    send ID :
+                    transaction type :
+                    data if available :
+                    */
+                    string com_data = Program.guid + "$" + strlist[0] + "$" + NativeMethods.DRAG_RECEIVED + "$" + strlist[2];
+                    Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+
+                    foreach (Process p in processes)
+                    {
+                        if (p.Id.ToString() == strlist[0])
+                        {
+                            IntPtr windowHandle = p.MainWindowHandle;
+
+                            NativeMethods.communicate(com_data, windowHandle, NativeMethods.WM_COPYDATA);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                e.Effect = DragDropEffects.None;
+
+        }
+
+        private static string GetAssemblyGuid(Assembly assembly)
+        {
+            object[] customAttribs = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
+            if (customAttribs.Length < 1)
+            {
+                return null;
+            }
+
+            return ((GuidAttribute)(customAttribs.GetValue(0))).Value.ToString();
+        }
+
+        private void tabpanel_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("tabdata"))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+
+        }
 
         ///////////////////////////////////////////////////////////////////////////
         ///       IMPORTANT: DEFINES MULTIPROCESS PROGRAM BEHAVIOR              ///
         ///////////////////////////////////////////////////////////////////////////
-       
+
 
         private void frame_home_Load(object sender, EventArgs e)
         {
@@ -400,20 +470,7 @@ namespace WindowsFormsApp5
                 MessageBox.Show(String.Format("The error {0} occurred.", error));
             }
         }
-
-        private void tabpanel_DragEnter(object sender, DragEventArgs e)
-        {
-            
-            Debug.WriteLine(e.Data.GetType());
-            if (e.Data.GetData(typeof(tabbutton)).GetType().Name== "tabbutton")
-            {
-                Debug.WriteLine("drag-2");
-                e.Effect = DragDropEffects.All; }
-            else
-            {
-                e.Effect = DragDropEffects.None;
-            }
-        }
+    
 
     }
 

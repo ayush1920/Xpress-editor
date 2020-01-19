@@ -14,11 +14,11 @@ namespace WindowsFormsApp5
     public partial class tabbutton : BunifuFlatButton
     {
 
-        static int movedtab = 0;
+        public static int movedtab = 0;
         static int initialtab = 0;
         static bool move = false;
         public string Target=null; // target of fctb attached to the button
-        public string fileLocation=null;
+        public string fileLocation=null; // location of saved file
         public bool openedTab = false;
 
         public tabbutton()
@@ -89,7 +89,7 @@ namespace WindowsFormsApp5
             move = true;
             // get initial tab
             int count = -1;
-            foreach (tabbutton item in WindowsFormsApp5.frame_home.buttonList)
+            foreach (tabbutton item in frame_home.buttonList)
             {
                 count = count + 1;
                 if (item.Name == Name)
@@ -100,8 +100,16 @@ namespace WindowsFormsApp5
             movedtab = initialtab;
 
             new Thread(new ThreadStart(test)).Start();
-          // DoDragDrop(btn,DragDropEffects.Copy);
-            //move = false;
+
+            DataObject data = new DataObject();
+            string fileLocation = frame_home.buttonList[initialtab].fileLocation;
+            if (fileLocation == null)
+                fileLocation = "null";
+            string tabname = frame_home.buttonList[initialtab].Text;
+            string garbagefile = Path.Combine(Path.GetTempPath(), "Xpress_editorGarbage.txt");
+            data.SetData("tabdata", Program.guid + "$" + frame_home.tabCount+"$"+initialtab);
+            DoDragDrop(data, DragDropEffects.Move);
+            move = false;
         }
 
         private void bunifuFlatButton_MouseUp(object sender, EventArgs e)
@@ -114,6 +122,7 @@ namespace WindowsFormsApp5
             while (move)
             { this.Invoke((MethodInvoker)delegate
                  {
+
                      int cnt = -1;
                      foreach (tabbutton item in frame_home.buttonList)
                      {
@@ -125,16 +134,18 @@ namespace WindowsFormsApp5
                          // access the static variable from other class
                          Point pt = frame_home.access_home.PointToClient(Cursor.Position);
                          // Individual window work only for top and left
-                         if (pt.X>0 && pt.Y >0)
+                         if (pt.X>0 && pt.Y >0 && pt.X< frame_home.access_home.getWindowSize().X && pt.Y < frame_home.access_home.getWindowSize().Y)
                          {
-                             if (initialtab != cnt && Decimal.ToInt16((MousePosition.X - frame_home.access_home.getWindowLocation().X) / 320) == cnt)
-                             {
-                                
-                                 movedtab = cnt;
-                                 item.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(173)))), ((int)(((byte)(107))))); ;
-                                 item.Normalcolor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(173)))), ((int)(((byte)(107)))));
+                             if (Decimal.ToInt16((MousePosition.X - frame_home.access_home.getWindowLocation().X) / 320) == cnt)
+                             {movedtab = cnt;
+                                 if (initialtab != cnt)
+                                 {
+                                     item.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(173)))), ((int)(((byte)(107))))); ;
+                                     item.Normalcolor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(173)))), ((int)(((byte)(107)))));
+                                 }
                                  continue;
                              }
+                             
                          }
                          else
                            movedtab = -1;
@@ -154,13 +165,31 @@ namespace WindowsFormsApp5
                 int ind = frame_home.access_home.getFctbBox(frame_home.buttonList[initialtab].Target);
                 tempPath = Path.Combine(tempPath, "Xpress_editorGarbage.txt");
                 File.WriteAllText(tempPath,frame_home.fctbList[ind].Text);
+                
+                // If Within .2 sec no message comes Proceed to open it as new window.
+                Thread.Sleep(200);
+                if (frame_home.TabCloseTrigger == true)
+                {while (frame_home.TabClosedStarted)
+                        Thread.Sleep(100);
+                    // force close without saving
+                    Invoke((MethodInvoker)delegate
+                    {
+                        frame_home.access_home.closeTab(true, initialtab);
+                    });
+
+                    frame_home.TabCloseTrigger = false;
+
+                    return;
+                }
+
+
+                // Start tab as a new Window
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = Path.Combine(System.Reflection.Assembly.GetEntryAssembly().Location);
-                // Location, Name, saved location
+                // Data Location, Name, saved location
                 string location = frame_home.buttonList[initialtab].fileLocation;
                 if (location == null)
                     location = "null";
-                Debug.WriteLine("\"" + tempPath + "\" \"" + frame_home.buttonList[initialtab].Text + "\" \"" + location + "\"");
                 startInfo.Arguments = "\""+tempPath+"\" \""+ frame_home.buttonList[initialtab].Text+"\" \"" + location+"\"";
                 Process.Start(startInfo);
                 Invoke((MethodInvoker)delegate
@@ -173,7 +202,7 @@ namespace WindowsFormsApp5
             if (movedtab == -1)
                 movedtab = initialtab;
 
-            // Adjust tab locations
+            // Adjust tab order
             frame_home.access_home.swapButtonLocation(initialtab, movedtab);
             // make a copy of initialtab at movedtab
             tabbutton tmp = frame_home.buttonList[initialtab];
