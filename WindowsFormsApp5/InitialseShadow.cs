@@ -120,6 +120,8 @@ namespace WindowsFormsApp5
 
                 }
 
+
+
                 else if (dataType == 3)
                 {
                     string tabdata = Marshal.PtrToStringAnsi(copyData.lpData);

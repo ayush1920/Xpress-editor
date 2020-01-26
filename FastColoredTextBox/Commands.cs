@@ -100,20 +100,27 @@ namespace FastColoredTextBoxNS
                 case '\b'://backspace
                     // Extra tab program
 
-                    String p = "";
-                    if (ts[tb.Selection.Start.iLine].Text.Length > 3)
+                    int p = 0;
+                    int length = tb.Selection.Start.iChar;
+
+                    for (int cnt = -1; cnt >= -1 * length; cnt--)
                     {
-                        for(int cnt=-1;cnt>-5 ;cnt--)
-                        p = p + ts[tb.Selection.Start.iLine][tb.Selection.End.iChar + cnt].c;
+                        char a = ts[tb.Selection.Start.iLine][tb.Selection.End.iChar + cnt].c;
+                        if (a != ' ')
+                            break;
+                        p++;
+                          
                     }
-                    if (p.Length > 0 && p =="    ") {
-                        for (int cnt = 0; cnt < 3; cnt++)
+                    if (p > 1) {
+                        int max = (p - 1) % 4;
+                        for (int cnt = 0; cnt < max; cnt++)
                         {
                             ts[tb.Selection.Start.iLine].RemoveAt(tb.Selection.Start.iChar - 1);
                             tb.Selection.Start = new Place(tb.Selection.Start.iChar - 1, tb.Selection.Start.iLine);
                         }
                     }
-                    
+
+                    // Extra End
                     if (tb.Selection.Start.iChar == 0 && tb.Selection.Start.iLine == 0)
                         return;
                     if (tb.Selection.Start.iChar == 0)
