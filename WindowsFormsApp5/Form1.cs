@@ -27,7 +27,7 @@ namespace WindowsFormsApp5
         
         public static int tabCount = 0;
         public static int incrementcount = 0;
-        public static int focusedtab = 0;
+        public static int focusedtab = -1;
         public static List<tabbutton> buttonList = new List<tabbutton>();
         public static List<fctb_box> fctbList = new List<fctb_box>();
         public static Bunifu.Framework.UI.BunifuFlatButton counter;
@@ -101,7 +101,6 @@ namespace WindowsFormsApp5
             fctbList.Add(fctb_box);
             panel_editor.Controls.Add(fctbList[fctbList.Count - 1]);
             fctbList[fctbList.Count - 1].BringToFront();
-            
             if (!panel_editor.Controls.Contains(tabpanel))
                 panel_editor.Controls.Add(tabpanel);
 
@@ -110,13 +109,49 @@ namespace WindowsFormsApp5
             button.Name = button_name;
             button.Target = fctb_name;
             button.fileLocation = fileLocation;
-            button.Location = new Point((tabCount - 1) * 320, 0);
-            buttonList.Add(button);
-            tabpanel.Controls.Add(buttonList[buttonList.Count - 1]);
-            resetColor(buttonList[buttonList.Count - 1]);
-            fctbList[fctbList.Count - 1].Select();
+
+
+            button.Location = new Point((focusedtab+1) * 320, 0);
+            buttonList.Insert(focusedtab+1,button);
+            // update location
+            int cnt = -1;
+            foreach (tabbutton item in buttonList) {
+                cnt++;
+                if (cnt > focusedtab+1)
+                    item.Location = new Point(item.Location.X + 320, 0);
+            }
+            tabpanel.Controls.Add(buttonList[focusedtab+1]);
+            resetColor(buttonList[focusedtab+1]);
+            fctbList[focusedtab].Select();
+
         }
 
+        public void jumptabRight()
+        {
+           
+            if (tabCount > 0 && focusedtab!=buttonList.Count-1)
+            {
+               
+                focusedtab++;
+                int ind = getFctbBox(buttonList[focusedtab].Target);
+                resetColor(buttonList[focusedtab]);
+                fctbList[ind].BringToFront();
+                fctbList[ind].Select();
+            }
+        }
+
+        public void jumptabLeft()
+        {
+            if (tabCount > 0 && focusedtab != 0)
+            {
+               
+                focusedtab--;
+                int ind = getFctbBox(buttonList[focusedtab].Target);
+                resetColor(buttonList[focusedtab]);
+                fctbList[ind].BringToFront();
+                fctbList[ind].Select();
+            }
+        }
 
         private void closeTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -124,7 +159,7 @@ namespace WindowsFormsApp5
         }
 
         public void closeTab(bool forced=false,int forcedtab=0) {
-
+            
             if (forced == true)
                 focusedtab = forcedtab;
             if (tabCount < 1)
@@ -163,7 +198,6 @@ namespace WindowsFormsApp5
                 else if (focusedtab == 0)
                 {
                     focusedtab++;
-                    
                     ind = getFctbBox(buttonList[0].Target);
                     resetColor(buttonList[0]);
                     fctbList[ind].BringToFront();
@@ -171,6 +205,8 @@ namespace WindowsFormsApp5
                 }
                 resetButtonLocation();
             }
+            else
+                focusedtab--;
         }
 
         private bool Save(tabbutton item, fctb_box fctb)
@@ -238,6 +274,16 @@ namespace WindowsFormsApp5
                 tabIndex = -1;
             // Debug.WriteLine(tabIndex);
             newTab(filename, tabIndex);
+        }
+
+        private void exitToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            Exit();
+        }
+
+        public void Exit()
+        {
+            Environment.Exit(Environment.ExitCode);
         }
 
         private void resetColor(tabbutton newbutton)
@@ -347,14 +393,20 @@ namespace WindowsFormsApp5
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Save(buttonList[focusedtab],fctbList[getFctbBox(buttonList[focusedtab].Target)]);
+            saveFile();
+        }
+        public void saveFile()
+        {
+            Save(buttonList[focusedtab], fctbList[getFctbBox(buttonList[focusedtab].Target)]); ;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ofdMain.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                open(ofdMain.FileName);               
-            EmptyWorkingSet(Process.GetCurrentProcess().Handle);
+            openFile();
+        }
+        public void openFile() {
+            if (ofdMain.ShowDialog() == DialogResult.OK)
+                open(ofdMain.FileName);
         }
 
 
@@ -389,7 +441,6 @@ namespace WindowsFormsApp5
             }
 
         }
-
 
         private void tabpanel_DragDrop(object sender, DragEventArgs e)
         {
@@ -452,6 +503,14 @@ namespace WindowsFormsApp5
 
         }
 
+        private void panel_editor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.T)
+                newTab(null, -1);
+            else if (e.Control && e.KeyCode == Keys.Q)
+                Exit();
+        }
+
         ///////////////////////////////////////////////////////////////////////////
         ///       IMPORTANT: DEFINES MULTIPROCESS PROGRAM BEHAVIOR              ///
         ///////////////////////////////////////////////////////////////////////////
@@ -470,7 +529,7 @@ namespace WindowsFormsApp5
                 MessageBox.Show(String.Format("The error {0} occurred.", error));
             }
         }
-    
+
 
     }
 

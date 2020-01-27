@@ -100,7 +100,7 @@ namespace FastColoredTextBoxNS
                 case '\b'://backspace
                     // Extra tab program
 
-                    int p = 0;
+                    int space_count = 0;
                     int length = tb.Selection.Start.iChar;
 
                     for (int cnt = -1; cnt >= -1 * length; cnt--)
@@ -108,11 +108,11 @@ namespace FastColoredTextBoxNS
                         char a = ts[tb.Selection.Start.iLine][tb.Selection.End.iChar + cnt].c;
                         if (a != ' ')
                             break;
-                        p++;
+                        space_count++;
                           
                     }
-                    if (p > 1) {
-                        int max = (p - 1) % 4;
+                    if (space_count > 1) {
+                        int max = (space_count - 1) % 4;
                         for (int cnt = 0; cnt < max; cnt++)
                         {
                             ts[tb.Selection.Start.iLine].RemoveAt(tb.Selection.Start.iChar - 1);

@@ -110,6 +110,7 @@ namespace WindowsFormsApp5
             data.SetData("tabdata", Program.guid + "$" + frame_home.tabCount+"$"+initialtab);
             DoDragDrop(data, DragDropEffects.Move);
             move = false;
+            frame_home.focusedtab = movedtab;
         }
 
         private void bunifuFlatButton_MouseUp(object sender, EventArgs e)

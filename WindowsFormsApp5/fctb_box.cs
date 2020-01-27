@@ -74,6 +74,38 @@ namespace WindowsFormsApp5
             base.closeTab();
             frame_home.access_home.closeTab();
         }
+        // override for shortcut Ctrl+O
+        protected override void openFile()
+        {
+            base.openFile();
+            frame_home.access_home.openFile();
+        }
+        // override for shortcut Ctrl+S
+        protected override void saveFile()
+        {
+            base.saveFile();
+            frame_home.access_home.saveFile();
+        }
+        // override for shortcut Ctrl+Q
+        protected override void exit()
+        {
+            base.exit();
+            frame_home.access_home.Exit();
+        }
+        // override for shortcut Ctrl+Alt+ Left
+        protected override void jumpTabLeft()
+        {
+            base.jumpTabLeft();
+            frame_home.access_home.jumptabLeft();
+
+        }
+        // overide for shortcut Ctrl+Alt+ Right
+        protected override void jumpTabRight()
+        {
+            base.jumpTabRight();
+            frame_home.access_home.jumptabRight();
+        }
+
 
         private void fctb_box_DragOver(object sender, DragEventArgs e)
         {

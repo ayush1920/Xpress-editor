@@ -33,7 +33,7 @@ namespace FastColoredTextBoxNS
             this[KEYS.Control | KEYS.V] = FCTBAction.Paste;
             this[KEYS.Control | KEYS.A] = FCTBAction.SelectAll;
             this[KEYS.Control | KEYS.Z] = FCTBAction.Undo;
-            this[KEYS.Control | KEYS.R] = FCTBAction.Redo;
+            this[KEYS.Control | KEYS.Y] = FCTBAction.Redo;
             this[KEYS.Control | KEYS.U] = FCTBAction.UpperCase;
             this[KEYS.Shift | KEYS.Control | KEYS.U] = FCTBAction.LowerCase;
             this[KEYS.Control | KEYS.OemMinus] = FCTBAction.NavigateBackward;
@@ -94,6 +94,11 @@ namespace FastColoredTextBoxNS
             this[KEYS.Control | KEYS.I] = FCTBAction.AutoIndentChars;
             this[KEYS.Control | KEYS.T] = FCTBAction.NewTab;
             this[KEYS.Control | KEYS.W] = FCTBAction.CloseTab;
+            this[KEYS.Control | KEYS.Alt | KEYS.Left] = FCTBAction.JumpTabLeft;
+            this[KEYS.Control | KEYS.Alt | KEYS.Right] = FCTBAction.JumpTabRight;
+            this[KEYS.Control | KEYS.Q] = FCTBAction.Exit;
+            this[KEYS.Control | KEYS.S] = FCTBAction.SaveFile;
+            this[KEYS.Control | KEYS.O] = FCTBAction.OpenFile;
         }
 
         public override string ToString()
@@ -230,7 +235,12 @@ namespace FastColoredTextBoxNS
         CustomAction19,
         CustomAction20,
         NewTab,
-        CloseTab
+        CloseTab,
+        JumpTabLeft,
+        JumpTabRight,
+        Exit,
+        OpenFile,
+        SaveFile
     }
 
     internal class HotkeysEditor : UITypeEditor
