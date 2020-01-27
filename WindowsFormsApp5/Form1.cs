@@ -410,9 +410,9 @@ namespace WindowsFormsApp5
         }
 
 
-        public void newWindowChange(string buttonname,string location)
+        public void newWindowChange(string buttonname,string location, bool ischanged)
         {
-            new Thread(()=>threadFun(buttonname, location)).Start();
+            new Thread(()=>threadFun(buttonname, location,ischanged)).Start();
         }
 
 
@@ -422,7 +422,7 @@ namespace WindowsFormsApp5
         }
 
 
-        private void threadFun(string buttonname,string location)
+        private void threadFun(string buttonname,string location,bool ischanged)
         {
             while (true)
             {
@@ -432,7 +432,7 @@ namespace WindowsFormsApp5
                     {
                         buttonList[focusedtab].Text = buttonname;
                         buttonList[focusedtab].fileLocation = location;
-                        fctbList[getFctbBox(buttonList[focusedtab].Target)].IsChanged = true;
+                        fctbList[getFctbBox(buttonList[focusedtab].Target)].IsChanged = ischanged;
                         
                     });
                     break;

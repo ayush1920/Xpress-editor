@@ -191,7 +191,8 @@ namespace WindowsFormsApp5
                 string location = frame_home.buttonList[initialtab].fileLocation;
                 if (location == null)
                     location = "null";
-                startInfo.Arguments = "\""+tempPath+"\" \""+ frame_home.buttonList[initialtab].Text+"\" \"" + location+"\"";
+                startInfo.Arguments = "\""+tempPath+"\" \""+ frame_home.buttonList[initialtab].Text+"\" \"" + location+"\" \""+ 
+                    Convert.ToInt32(frame_home.fctbList[frame_home.access_home.getFctbBox(frame_home.buttonList[initialtab].Target)].IsChanged)+"\"";
                 Process.Start(startInfo);
                 Invoke((MethodInvoker)delegate
                 {

@@ -154,7 +154,7 @@ namespace WindowsFormsApp5
                                 if (location == null)
                                     location = "null";
                                 string com_data = Program.guid + "$" + strlist[0] + "$" + NativeMethods.DRAG_FINISH + "$" +
-                                Path.Combine(Path.GetTempPath(), "Xpress_editorGarbage.txt") + "$" + btn.Text + "$" + location;
+                                Path.Combine(Path.GetTempPath(), "Xpress_editorGarbage.txt") + "$" + btn.Text + "$" + location+"$"+ Convert.ToInt32(fctbList[getFctbBox(btn.Target)].IsChanged);
                                 Process[] processes = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
                                 foreach (Process p in processes)
                                 {
@@ -172,10 +172,11 @@ namespace WindowsFormsApp5
                                 string grbg_path = strlist[3];
                                 string name = strlist[4];
                                 string location = strlist[5];
+                                bool ischanged = Convert.ToBoolean(Int32.Parse(strlist[6]));
                                 if (location == "null")
                                     location = null;
                                 int old = buttonList.Count;
-                                new Thread(() => threadFun(name,location)).Start();
+                                new Thread(() => threadFun(name,location,ischanged)).Start();
                                 Thread.Sleep(100);
                                 newTab(grbg_path, -1);
                             }

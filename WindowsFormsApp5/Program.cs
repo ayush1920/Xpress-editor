@@ -53,7 +53,7 @@ namespace WindowsFormsApp5
         {
             guid = "034c3adc-0056-4167-97e0-772f92d572fa";
             bool createdNew = true;
-            if (args.Length == 3)
+            if (args.Length == 4)
             guid = Guid.NewGuid().ToString();
             
             //by creating a mutex, the next application instance will detect it
@@ -76,12 +76,12 @@ namespace WindowsFormsApp5
                     frame_home frame = new frame_home(filename);
 
                     // check for modifications
-                    if (args.Length == 3)
+                    if (args.Length == 4)
                     {
                         string location = args[2];
                         if (location == "null")
                             location = null;
-                        frame.newWindowChange(args[1], location);
+                        frame.newWindowChange(args[1], location, Convert.ToBoolean(Int32.Parse(args[3])));
                     }
 
                     guid = Process.GetCurrentProcess().Id.ToString();
